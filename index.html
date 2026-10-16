@@ -1,61 +1,164 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#ffffff">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#ffffff" />
 <title>La otra sala · Experiencia AR</title>
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 <style>
-:root{--yellow:#f5ef00;--black:#050505}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:var(--black);background:#fff}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.screen{position:fixed;inset:0;z-index:40;background:#fff}
-#intro{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:calc(18px + env(safe-area-inset-top)) 18px calc(85px + env(safe-area-inset-bottom))}
-.x{position:absolute;top:calc(18px + env(safe-area-inset-top));left:18px;background:transparent;border:0;font-size:25px;font-weight:300;line-height:1}
-#start{width:78px;height:78px;border-radius:50%;border:0;background:#000;color:#fff;font-size:16px;box-shadow:0 3px 3px #0001}
-#start:disabled{opacity:.55}#error{display:none;position:absolute;bottom:20px;left:20px;right:20px;text-align:center;color:#b22;font-size:12px}
-#cameraUI{display:none;position:fixed;inset:0;z-index:25;pointer-events:none;flex-direction:column;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top)) 20px calc(34px + env(safe-area-inset-bottom))}
-.cameraTop{display:flex;align-items:center;justify-content:space-between}.cameraClose{pointer-events:auto;border:0;background:#fff;border-radius:50%;width:34px;height:34px;font-size:24px;line-height:1}
-.timer{background:#7779;color:#fff;border-radius:9px;padding:5px 10px;font-size:11px;font-variant-numeric:tabular-nums;letter-spacing:.05em}.redDot{display:inline-block;width:7px;height:7px;background:#e94444;border-radius:50%;margin-right:5px}
-#hint{align-self:center;background:#ffffffdd;border-radius:20px;padding:9px 14px;text-align:center;font-size:12px;max-width:290px}
-.cameraBottom{display:flex;justify-content:center;align-items:center;gap:34px;pointer-events:auto}.shutter{width:64px;height:64px;border:1px solid #000;background:#fff;border-radius:50%;display:grid;place-items:center}.shutter::after{content:'';width:19px;height:19px;border-radius:50%;background:#000}.cameraGlyph{background:#fff;border:0;border-radius:50%;width:40px;height:40px;font-size:23px}.shareMini{background:var(--yellow);border:0;border-radius:50%;width:42px;height:42px;font-size:23px}
-#shareScreen{display:none;align-items:center;justify-content:space-between;flex-direction:column;padding:calc(20px + env(safe-area-inset-top)) 25px calc(54px + env(safe-area-inset-bottom));overflow:hidden}
-.shareTop{align-self:stretch;display:flex;justify-content:flex-start}.back{width:42px;height:42px;border:0;background:var(--yellow);border-radius:50%;font-size:26px}
-.shareArt{position:absolute;z-index:0;inset:12% -22% 14% -12%;pointer-events:none}.burst{position:absolute;right:0;top:16%;width:73%;height:68%;background:var(--yellow);clip-path:polygon(0 40%,100% 0,70% 45%,100% 100%,20% 70%)}.blackDisc{position:absolute;right:20%;top:4%;background:#000;width:98px;height:98px;border-radius:50%}.door{position:absolute;left:25%;top:35%;width:90px;height:200px;background:var(--yellow);transform:skewY(-15deg)}.door:after{content:'';position:absolute;top:49%;left:30px;background:#fff;width:10px;height:7px;border-radius:50%}
-.shareContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;margin:auto 0;text-align:center}.shareContent h2{font-size:13px;font-weight:400;margin:0}.shareContent p{font-size:12px;background:#fff;padding:8px 12px;border-radius:20px;margin:0}.qrIcon{width:52px;height:52px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:28px}
-.shareButtons{position:relative;z-index:1;display:flex;gap:12px;flex-direction:column;align-items:center}.shareButtons button{background:#fff;border:1px solid #000;border-radius:30px;padding:12px 25px;font-size:13px}
-a-scene{position:fixed!important;inset:0}
+:root{--yellow:#f4ef00;--ink:#050505;--muted:#858585}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #4d7aff;outline-offset:3px}
+.screen{position:fixed;inset:0;z-index:50;background:#fff}
+#intro{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 18px) 24px calc(env(safe-area-inset-bottom) + 92px)}
+.intro-top{width:100%;display:flex;justify-content:flex-start}.plain-close{border:0;background:transparent;font-size:25px;line-height:1;padding:4px}
+.intro-logo{width:min(76vw,290px);display:flex;flex-direction:column;align-items:center;gap:14px;margin:auto 0}
+.intro-logo svg{width:150px;max-width:100%;height:auto}.brandname{font-size:34px;letter-spacing:-1.5px;font-weight:400}.brandline{font-size:10px;letter-spacing:.15em;margin-top:-7px}
+#start{width:86px;height:86px;border-radius:50%;border:0;background:#000;color:#fff;font-size:16px;flex-shrink:0}
+#start:disabled{opacity:.55}#error{display:none;position:absolute;bottom:16px;left:20px;right:20px;text-align:center;color:#b11;font-size:12px}
+/* The AR camera is the page background; UI stays above it. */
+a-scene{position:fixed!important;inset:0;z-index:1}
+#cameraUI{display:none;position:fixed;inset:0;z-index:30;pointer-events:none;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 17px)}
+.cameraTop{display:flex;justify-content:space-between;align-items:flex-start}.cameraLeft{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.yellowBack{width:43px;height:43px;border:0;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:28px;line-height:1;pointer-events:auto}
+.cameraClose{border:0;background:#ffffffd9;font-size:22px;width:30px;height:30px;pointer-events:auto;line-height:1}
+.timer{font-size:11px;background:#ffffffd9;padding:6px 9px;border-radius:8px;letter-spacing:.05em;font-variant-numeric:tabular-nums}
+#hint{align-self:center;max-width:90%;background:#ffffffd9;border-radius:20px;padding:9px 14px;font-size:12px;text-align:center;margin:auto 0 10px}
+.cameraBottom{display:flex;flex-direction:column;align-items:center;gap:15px;pointer-events:auto}
+.player{width:min(95vw,370px);background:#ffffffee;border-radius:15px;padding:12px 16px 10px;box-shadow:0 2px 16px #0002}
+.progress{display:flex;align-items:center;gap:9px;font-size:10px}.progress input{width:100%;accent-color:#000;min-width:0}.playerControls{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.playerControls button{border:0;background:none;padding:4px;font-size:19px;line-height:1}.playerControls .playPause{font-size:23px}
+.lowerTools{display:flex;align-items:center;justify-content:center;width:100%;position:relative;min-height:88px;transition:transform .2s}
+.blackDisc{width:88px;height:73px;border-radius:50%;background:#000;filter:blur(9px);border:0;opacity:.96;pointer-events:none}
+.shareCTA{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;width:max-content;max-width:95%;pointer-events:auto}
+.shareBubble{width:58px;height:58px;flex:0 0 58px;background:transparent;border:0;padding:0;display:grid;place-items:center;transition:transform .2s}
+.shareBubble img{width:58px;height:58px;display:block;object-fit:contain}
+.shareBubble:active{transform:scale(.94)}
+.shareMessage{border:0;border-radius:27px;background:var(--yellow);padding:10px 14px;min-height:47px;max-width:175px;color:#000;text-align:left;font-size:10px;font-weight:700;line-height:1.2}
+#socialTray{position:fixed;left:0;right:0;bottom:0;z-index:42;background:#fff;padding:13px 12px calc(env(safe-area-inset-bottom) + 14px);box-shadow:0 -6px 18px #0002;display:none;pointer-events:auto}
+#socialTray.visible{display:block}
+.socialTop{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;margin-bottom:13px}
+.socialTop button{background:none;border:0;font-size:20px;padding:0 6px}
+.socialLinks{display:flex;align-items:flex-start;gap:16px;overflow-x:auto;scrollbar-width:none}
+.socialLinks::-webkit-scrollbar{display:none}
+.socialLink{min-width:58px;display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:transparent;padding:0 0 5px;font-size:9px;color:#555}
+.socialIcon{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:25px;font-weight:700}
+.socialIcon.x{background:#050505;font-size:25px;font-weight:400}
+.socialIcon.ig{background:linear-gradient(35deg,#ffb800,#f30a67 48%,#8525e7)}
+.socialIcon.wa{background:#20c862}
+.socialIcon.fb{background:#1266e8;font-family:Arial;font-size:30px}
+.socialIcon.tg{background:#28a7e8;font-size:24px}
+.socialIcon.more{background:#222;font-size:22px}
+.socialIcon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2}
+#shareFeedback{font-size:11px;color:#333;text-align:center;min-height:15px;margin-top:9px}
+@media(min-width:600px){#socialTray{max-width:440px;left:50%;right:auto;width:100%;transform:translateX(-50%)}}
+/* Share screen, inspired by Figma composition */
+#shareScreen{display:none;flex-direction:column;align-items:center;justify-content:space-between;overflow:hidden;padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 46px)}
+.shareBack{align-self:flex-start;z-index:3}
+.shareTitle{z-index:3;position:relative;text-align:center;font-size:13px;margin:4px 0 0}
+.shareQr{z-index:3;position:relative;background:#fff;border-radius:50%;width:55px;height:55px;display:grid;place-items:center;margin:10px auto 0}
+.shareQr svg{width:32px;height:32px}
+.shareStage{position:absolute;inset:15% -9% 16% -10%;pointer-events:none;overflow:hidden}
+.shareStage .star{position:absolute;inset:8% -20% 7% 2%;background:var(--yellow);clip-path:polygon(0 50%,25% 44%,13% 7%,42% 30%,62% 0,69% 30%,100% 17%,81% 50%,100% 84%,67% 68%,52% 100%,40% 69%,11% 86%,25% 57%)}
+.shareStage .disc{position:absolute;right:20%;top:4%;width:min(28vw,130px);aspect-ratio:1;border-radius:50%;background:#000}
+.shareStage .door{position:absolute;left:21%;top:35%;height:39%;width:28%;max-width:140px;background:var(--yellow);clip-path:polygon(0 19%,100% 0,100% 83%,0 100%)}
+.shareStage .door:after{content:'';position:absolute;top:53%;left:45%;width:12px;height:7px;border-radius:50%;background:#fff}
+.shareFooter{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.thanks{font-size:13px;border:1px solid #000;border-radius:30px;padding:12px 24px;background:#fff;transform:rotate(-9deg)}
+.shareCaption{font-size:11px;background:#fff;padding:6px 10px;border-radius:15px}
+.shareButton{border:0;border-radius:30px;padding:13px 25px;background:#000;color:#fff;font-size:12px}
+.shareButton.secondary{background:#fff;color:#000;border:1px solid #000}
+@media(min-width:600px){#intro,#shareScreen{max-width:440px;left:50%;right:auto;width:100%;transform:translateX(-50%)}#cameraUI{max-width:440px;left:50%;right:auto;width:100%;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
-<section id="intro" class="screen" aria-label="Inicio"><button class="x" id="exitIntro" aria-label="Cerrar">×</button><button id="start">START</button><div id="error" role="alert"></div></section>
-<div id="cameraUI">
- <div class="cameraTop"><button class="cameraClose" id="closeCamera" aria-label="Volver">×</button><span class="timer"><span class="redDot"></span><span id="time">00:00</span></span></div>
+<!-- Inline vector is an approximate logo. Replace with original Figma SVG when available. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" style="position:absolute"><symbol id="brand-symbol" viewBox="0 0 180 180"><path d="M37 32L14 2L63 26L80 0L84 31L123 7L108 45L175 42L117 72L169 111L109 100L126 165L83 119L46 178L48 109L3 129L33 88L0 56L43 61Z" fill="none" stroke="#111" stroke-width="1.4"/><path d="M53 41L98 28L98 138L53 150Z" fill="#050505"/><ellipse cx="80" cy="91" rx="5" ry="3.5" fill="#fff"/></symbol></svg>
+<section id="intro" class="screen" aria-label="Inicio">
+  <div class="intro-top"><button id="exitIntro" class="plain-close" aria-label="Cerrar">×</button></div>
+  <div class="intro-logo"><svg viewBox="0 0 180 180" aria-label="Símbolo de La otra sala"><use href="#brand-symbol"/></svg><div class="brandname">La otra sala</div><div class="brandline">CAFÉ · ARTE · CULTURA · AR</div></div>
+  <button id="start">START</button><div id="error" role="alert"></div>
+</section>
+<div id="cameraUI" aria-label="Cámara AR">
+ <div class="cameraTop"><div class="cameraLeft"><button id="backCamera" class="yellowBack" aria-label="Volver">←</button><button id="closeCamera" class="cameraClose" aria-label="Cerrar">×</button></div><span class="timer" id="time">00:00</span></div>
  <div id="hint">Apunta la cámara hacia la ilustración.</div>
- <div class="cameraBottom"><button class="shareMini" id="shareNow" aria-label="Compartir">↗</button><button class="shutter" id="replay" aria-label="Reproducir animación de nuevo"></button><button class="cameraGlyph" id="help" aria-label="Ayuda">▣</button></div>
+ <div class="cameraBottom">
+  <div class="player" aria-label="Controles de animación"><div class="progress"><span id="elapsed">00:00</span><input id="seek" type="range" min="0" max="8" step="0.1" value="0" aria-label="Posición del vídeo"><span id="duration">00:08</span></div><div class="playerControls"><button id="rewind" aria-label="Reiniciar">⏮</button><button id="togglePlay" class="playPause" aria-label="Reproducir o pausar">▶</button><button id="forward" aria-label="Avanzar">⏭</button><button id="fullscreen" aria-label="Ver pantalla completa">⛶</button></div></div>
+  <div class="lowerTools">
+   <div class="blackDisc" aria-hidden="true"></div>
+   <div class="shareCTA">
+     <button id="shareNow" class="shareBubble" aria-label="Mostrar redes sociales para compartir"><img src="./share-icon.png" alt=""></button>
+     <button id="shareMessage" class="shareMessage">COMPARTE TU EXPERIENCIA<br>Y GANA MILES DE OFERTAS</button>
+   </div>
+  </div>
+ </div>
 </div>
-<section id="shareScreen" class="screen" aria-label="Compartir experiencia"><div class="shareArt"><div class="burst"></div><div class="blackDisc"></div><div class="door"></div></div><div class="shareTop"><button class="back" id="backToCamera" aria-label="Volver">←</button></div><div class="shareContent"><h2>¡Escanéame en bares!</h2><div class="qrIcon">▦</div><p>Comparte la experiencia con tus amigos</p></div><div class="shareButtons"><button id="shareAction">COMPARTIR EXPERIENCIA</button><button id="restart">VOLVER A LA EXPERIENCIA</button></div></section>
-<a-scene id="scene" mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; maxTrack: 1" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
-<a-assets timeout="25000"><video id="video" src="./animacao.mp4" preload="auto" muted playsinline webkit-playsinline crossorigin="anonymous"></video></a-assets>
-<a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-<a-entity id="target" mindar-image-target="targetIndex: 0"><a-video src="#video" width="1" height="0.6982" position="0 0 0.01" material="shader: flat; side: double"></a-video></a-entity>
+<div id="socialTray" role="dialog" aria-label="Compartir en redes sociales">
+ <div class="socialTop"><strong>COMPARTIR EXPERIENCIA</strong><button id="closeSocial" aria-label="Cerrar redes sociales">×</button></div>
+ <div class="socialLinks">
+  <button class="socialLink" data-social="x"><span class="socialIcon x">𝕏</span><span>Post</span></button>
+  <button class="socialLink" data-social="instagram"><span class="socialIcon ig"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></span><span>Reels</span></button>
+  <button class="socialLink" data-social="whatsapp"><span class="socialIcon wa"><svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.3 7.6L3 20l1-4.7A8.5 8.5 0 1 1 20 11.5Z"/><path d="M8.3 8.2c.5 3.4 3.1 5.9 6.6 7l1.4-1.6-2.5-1.2-.8 1c-1.4-.6-2.4-1.7-3-3l1-.8-1.2-2.5Z" stroke-width="1.3"/></svg></span><span>WhatsApp</span></button>
+  <button class="socialLink" data-social="facebook"><span class="socialIcon fb">f</span><span>Feed</span></button>
+  <button class="socialLink" data-social="telegram"><span class="socialIcon tg">➤</span><span>Telegram</span></button>
+  <button class="socialLink" data-social="more"><span class="socialIcon more">···</span><span>Más</span></button>
+ </div>
+ <div id="shareFeedback" aria-live="polite"></div>
+</div>
+<section id="shareScreen" class="screen" aria-label="Compartir">
+ <button id="backToCamera" class="yellowBack shareBack" aria-label="Volver">←</button>
+ <div><p class="shareTitle">¡Escanéame en bares!</p><div class="shareQr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="7" height="7"/><rect x="15" y="2" width="7" height="7"/><rect x="2" y="15" width="7" height="7"/><path d="M15 15h3v3h-3zm6 0v4h-3m-3 2h4"/></svg></div></div>
+ <div class="shareStage"><div class="star"></div><div class="disc"></div><div class="door"></div></div>
+ <div class="shareFooter"><div class="thanks">GRACIAS</div><div class="shareCaption">por compartir</div><button id="shareAction" class="shareButton">COMPARTIR EXPERIENCIA</button><button id="restart" class="shareButton secondary">VOLVER A LA EXPERIENCIA</button></div>
+</section>
+<a-scene id="scene" mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; maxTrack: 1" color-space="sRGB" renderer="colorManagement: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
+ <a-assets timeout="30000"><video id="video" src="./animacao.mp4" preload="auto" muted playsinline webkit-playsinline crossorigin="anonymous"></video></a-assets>
+ <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+ <a-entity id="target" mindar-image-target="targetIndex: 0"><a-video src="#video" width="1" height="0.6982" position="0 0 0.01" material="shader: flat; side: double"></a-video></a-entity>
 </a-scene>
 <script>
-const $=id=>document.getElementById(id),scene=$('scene'),video=$('video'),target=$('target');let started=false,found=false,startedAt=0,clock=null;
-function show(id){$('intro').style.display=id==='intro'?'flex':'none';$('cameraUI').style.display=id==='cameraUI'?'flex':'none';$('shareScreen').style.display=id==='shareScreen'?'flex':'none'}
-function tick(){if(!startedAt)return;const s=Math.floor((Date.now()-startedAt)/1000);$('time').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-async function begin(){ $('start').disabled=true;$('start').textContent='…';$('error').style.display='none';try{try{await video.play();video.pause();video.currentTime=0}catch(e){}if(!scene.hasLoaded)await new Promise((resolve,reject)=>{scene.addEventListener('loaded',resolve,{once:true});setTimeout(()=>reject(Error('timeout')),25000)});await scene.systems['mindar-image-system'].start();started=true;startedAt=Date.now();clock=setInterval(tick,1000);tick();show('cameraUI')}catch(e){console.error(e);$('error').textContent='No se pudo iniciar la cámara. Comprueba el permiso, HTTPS y targets.mind.';$('error').style.display='block'}finally{$('start').disabled=false;$('start').textContent='START'}}
-async function stop(){video.pause();if(started){try{await scene.systems['mindar-image-system'].stop()}catch(e){console.warn(e)}}started=false;found=false;clearInterval(clock);startedAt=0}
-$('start').addEventListener('click',begin);$('exitIntro').addEventListener('click',()=>{if(history.length>1)history.back()});$('closeCamera').addEventListener('click',async()=>{await stop();show('intro')});
-target.addEventListener('targetFound',async()=>{found=true;$('hint').textContent='¡La obra cobra vida!';try{video.currentTime=0;await video.play()}catch(e){$('hint').textContent='Toca el botón central para reproducir.'}});
+const $=id=>document.getElementById(id),scene=$('scene'),video=$('video'),target=$('target');
+let started=false,found=false,startedAt=0,clock=null,showShareOnEnd=true;
+function show(id){$('intro').style.display=id==='intro'?'flex':'none';$('cameraUI').style.display=id==='cameraUI'?'flex':'none';$('shareScreen').style.display=id==='shareScreen'?'flex':'none';if(id!=='cameraUI')closeSocial()}
+function stamp(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function sync(){let t=video.currentTime||0,d=Number.isFinite(video.duration)?video.duration:8;$('elapsed').textContent=stamp(t);$('duration').textContent=stamp(d);$('seek').max=d;$('seek').value=t;$('togglePlay').textContent=video.paused?'▶':'❚❚'}
+function tick(){if(startedAt)$('time').textContent=stamp((Date.now()-startedAt)/1000)}
+async function begin(){ $('start').disabled=true;$('start').textContent='…';$('error').style.display='none';try{try{await video.play();video.pause();video.currentTime=0}catch(e){}if(!scene.hasLoaded)await new Promise((resolve,reject)=>{scene.addEventListener('loaded',resolve,{once:true});setTimeout(()=>reject(Error('scene timeout')),30000)});await scene.systems['mindar-image-system'].start();started=true;startedAt=Date.now();clock=setInterval(tick,1000);tick();show('cameraUI')}catch(e){console.error(e);$('error').textContent='No se pudo iniciar la cámara. Revisa los permisos, HTTPS y targets.mind.';$('error').style.display='block'}finally{$('start').disabled=false;$('start').textContent='START'}}
+async function stop(){video.pause();if(started){try{await scene.systems['mindar-image-system'].stop()}catch(e){console.warn(e)}}started=false;found=false;clearInterval(clock);startedAt=0;sync()}
+async function playAgain(){if(!found){$('hint').textContent='Enfoca primero la ilustración.';return}video.currentTime=0;showShareOnEnd=true;try{await video.play()}catch(e){$('hint').textContent='Toca ▶ para reproducir.'}}
+$('start').addEventListener('click',begin);$('exitIntro').addEventListener('click',()=>{if(history.length>1)history.back()});
+for(const id of ['closeCamera','backCamera'])$(id).addEventListener('click',async()=>{await stop();show('intro')});
+target.addEventListener('targetFound',async()=>{found=true;$('hint').textContent='¡La obra cobra vida!';if($('shareScreen').style.display==='flex')return;video.currentTime=0;showShareOnEnd=true;try{await video.play()}catch(e){$('hint').textContent='Pulsa ▶ para reproducir.'}});
 target.addEventListener('targetLost',()=>{found=false;video.pause();$('hint').textContent='Apunta la cámara hacia la ilustración.'});
-video.addEventListener('ended',()=>{if(started){video.pause();show('shareScreen')}});
-$('replay').addEventListener('click',async()=>{if(found){video.currentTime=0;try{await video.play()}catch(e){}}else{$('hint').textContent='Enfoca primero la ilustración.'}});
-$('help').addEventListener('click',()=>{$('hint').textContent='Enfoca la ilustración completa, sin reflejos.'});
-$('shareNow').addEventListener('click',()=>{video.pause();show('shareScreen')});$('backToCamera').addEventListener('click',()=>show('cameraUI'));
-$('restart').addEventListener('click',()=>{show('cameraUI');if(found){video.currentTime=0;video.play().catch(()=>{})}});
+video.addEventListener('timeupdate',sync);video.addEventListener('loadedmetadata',sync);video.addEventListener('play',sync);video.addEventListener('pause',sync);
+video.addEventListener('ended',()=>{sync();if(started&&showShareOnEnd){video.pause();$('hint').textContent='¡Comparte tu experiencia!';}});
+$('replay').addEventListener('click',playAgain);$('rewind').addEventListener('click',playAgain);
+$('forward').addEventListener('click',()=>{if(found){video.currentTime=Math.min(video.duration||8,video.currentTime+3)}});
+$('togglePlay').addEventListener('click',async()=>{if(!found){$('hint').textContent='Enfoca primero la ilustración.';return}if(video.paused){if(video.ended)video.currentTime=0;showShareOnEnd=true;try{await video.play()}catch(e){}}else video.pause()});
+$('seek').addEventListener('input',e=>{if(found)video.currentTime=Number(e.target.value)});
+$('fullscreen').addEventListener('click',()=>{$('hint').textContent='Mueve el móvil para encuadrar toda la ilustración.'});
+function closeSocial(){$('socialTray').classList.remove('visible');$('shareFeedback').textContent=''}
+function openSocial(){video.pause();$('socialTray').classList.add('visible')}
+$('shareNow').addEventListener('click',openSocial);
+$('shareMessage').addEventListener('click',openSocial);
+$('closeSocial').addEventListener('click',closeSocial);
+async function shareNative(){const data={title:'La otra sala · Experiencia AR',text:'Descubre la experiencia AR de La otra sala',url:location.href};if(navigator.share){await navigator.share(data)}else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('shareFeedback').textContent='Enlace copiado para compartir'}else window.prompt('Copia el enlace',location.href)}
+document.querySelectorAll('[data-social]').forEach(btn=>btn.addEventListener('click',async()=>{
+ const kind=btn.dataset.social,link=encodeURIComponent(location.href),msg=encodeURIComponent('Descubre la experiencia AR de La otra sala');
+ try{
+  if(kind==='x')window.open('https://twitter.com/intent/tweet?text='+msg+'&url='+link,'_blank','noopener');
+  else if(kind==='whatsapp')window.open('https://api.whatsapp.com/send?text='+msg+'%20'+link,'_blank','noopener');
+  else if(kind==='facebook')window.open('https://www.facebook.com/sharer/sharer.php?u='+link,'_blank','noopener');
+  else if(kind==='telegram')window.open('https://t.me/share/url?url='+link+'&text='+msg,'_blank','noopener');
+  else if(kind==='instagram'){if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('shareFeedback').textContent='Enlace copiado. Pégalo en Instagram.'}else await shareNative()}
+  else await shareNative();
+ }catch(e){if(e.name!=='AbortError')$('shareFeedback').textContent='No se pudo compartir. Intenta copiar el enlace.'}
+}));
+$('backToCamera').addEventListener('click',()=>{show('cameraUI');$('hint').textContent=found?'Pulsa ▶ para continuar.':'Apunta la cámara hacia la ilustración.'});
+$('restart').addEventListener('click',()=>{show('cameraUI');playAgain()});
 $('shareAction').addEventListener('click',async()=>{const data={title:'La otra sala · Experiencia AR',text:'Descubre la experiencia AR de La otra sala',url:location.href};try{if(navigator.share)await navigator.share(data);else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('shareAction').textContent='ENLACE COPIADO'}else window.prompt('Copia el enlace',location.href)}catch(e){if(e.name!=='AbortError')console.warn(e)}});
-scene.addEventListener('arError',()=>{$('hint').textContent='Error de cámara. Revisa los permisos.'});
+scene.addEventListener('arError',()=>{$('hint').textContent='Error de cámara. Revisa los permisos.'});sync();
 </script>
 </body></html>
