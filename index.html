@@ -1,93 +1,61 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#e9ac22">
-  <title>La otra sala · Arte en movimiento</title>
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#151515;color:white}
-    .overlay{position:fixed;z-index:10;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom));}
-    .brand{font-weight:800;font-size:23px;line-height:1.0;letter-spacing:-1px;text-align:center;text-shadow:0 2px 10px #0008}
-    .status{background:#111d;border:1px solid #ffffff35;border-radius:16px;padding:13px 16px;text-align:center;max-width:340px;font-size:15px;line-height:1.4;backdrop-filter:blur(7px)}
-    #startScreen{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px;padding:30px;background:#f5c33c;color:#171717}
-    #startScreen h1{font-size:clamp(36px,11vw,64px);line-height:.95;letter-spacing:-2px;margin:0}
-    #startScreen p{max-width:330px;line-height:1.5;margin:0}
-    button{border:0;border-radius:40px;padding:17px 26px;font-weight:800;font-size:17px;background:#171717;color:white;cursor:pointer}
-    #startScreen .note{font-size:12px;opacity:.75}
-    #help{position:fixed;bottom:100px;left:12px;right:12px;z-index:12;text-align:center;font-size:12px;color:white;text-shadow:0 1px 3px black;pointer-events:none}
-    a-scene{position:fixed!important;inset:0}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>La otra sala · Experiencia AR</title>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+:root{--yellow:#f5ef00;--black:#050505}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:var(--black);background:#fff}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.screen{position:fixed;inset:0;z-index:40;background:#fff}
+#intro{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:calc(18px + env(safe-area-inset-top)) 18px calc(85px + env(safe-area-inset-bottom))}
+.x{position:absolute;top:calc(18px + env(safe-area-inset-top));left:18px;background:transparent;border:0;font-size:25px;font-weight:300;line-height:1}
+#start{width:78px;height:78px;border-radius:50%;border:0;background:#000;color:#fff;font-size:16px;box-shadow:0 3px 3px #0001}
+#start:disabled{opacity:.55}#error{display:none;position:absolute;bottom:20px;left:20px;right:20px;text-align:center;color:#b22;font-size:12px}
+#cameraUI{display:none;position:fixed;inset:0;z-index:25;pointer-events:none;flex-direction:column;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top)) 20px calc(34px + env(safe-area-inset-bottom))}
+.cameraTop{display:flex;align-items:center;justify-content:space-between}.cameraClose{pointer-events:auto;border:0;background:#fff;border-radius:50%;width:34px;height:34px;font-size:24px;line-height:1}
+.timer{background:#7779;color:#fff;border-radius:9px;padding:5px 10px;font-size:11px;font-variant-numeric:tabular-nums;letter-spacing:.05em}.redDot{display:inline-block;width:7px;height:7px;background:#e94444;border-radius:50%;margin-right:5px}
+#hint{align-self:center;background:#ffffffdd;border-radius:20px;padding:9px 14px;text-align:center;font-size:12px;max-width:290px}
+.cameraBottom{display:flex;justify-content:center;align-items:center;gap:34px;pointer-events:auto}.shutter{width:64px;height:64px;border:1px solid #000;background:#fff;border-radius:50%;display:grid;place-items:center}.shutter::after{content:'';width:19px;height:19px;border-radius:50%;background:#000}.cameraGlyph{background:#fff;border:0;border-radius:50%;width:40px;height:40px;font-size:23px}.shareMini{background:var(--yellow);border:0;border-radius:50%;width:42px;height:42px;font-size:23px}
+#shareScreen{display:none;align-items:center;justify-content:space-between;flex-direction:column;padding:calc(20px + env(safe-area-inset-top)) 25px calc(54px + env(safe-area-inset-bottom));overflow:hidden}
+.shareTop{align-self:stretch;display:flex;justify-content:flex-start}.back{width:42px;height:42px;border:0;background:var(--yellow);border-radius:50%;font-size:26px}
+.shareArt{position:absolute;z-index:0;inset:12% -22% 14% -12%;pointer-events:none}.burst{position:absolute;right:0;top:16%;width:73%;height:68%;background:var(--yellow);clip-path:polygon(0 40%,100% 0,70% 45%,100% 100%,20% 70%)}.blackDisc{position:absolute;right:20%;top:4%;background:#000;width:98px;height:98px;border-radius:50%}.door{position:absolute;left:25%;top:35%;width:90px;height:200px;background:var(--yellow);transform:skewY(-15deg)}.door:after{content:'';position:absolute;top:49%;left:30px;background:#fff;width:10px;height:7px;border-radius:50%}
+.shareContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;margin:auto 0;text-align:center}.shareContent h2{font-size:13px;font-weight:400;margin:0}.shareContent p{font-size:12px;background:#fff;padding:8px 12px;border-radius:20px;margin:0}.qrIcon{width:52px;height:52px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:28px}
+.shareButtons{position:relative;z-index:1;display:flex;gap:12px;flex-direction:column;align-items:center}.shareButtons button{background:#fff;border:1px solid #000;border-radius:30px;padding:12px 25px;font-size:13px}
+a-scene{position:fixed!important;inset:0}
+</style>
 </head>
 <body>
-  <div id="startScreen">
-    <h1>La otra<br>sala</h1>
-    <p>Una obra. Otra realidad.<br>Apunta la cámara hacia la ilustración para descubrir su movimiento.</p>
-    <button id="startButton">Iniciar experiencia</button>
-    <span class="note">Se solicitará permiso para usar la cámara.</span>
-  </div>
-  <div class="overlay">
-    <div class="brand">La otra sala</div>
-    <div class="status" id="status">Preparando la experiencia…</div>
-  </div>
-  <div id="help">Mantén la ilustración completa dentro de la cámara y evita reflejos.</div>
-  <a-scene id="scene"
-    mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; maxTrack: 1"
-    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true"
-    vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
-    <a-assets timeout="20000">
-      <video id="video" src="./animacao.mp4" preload="auto" loop muted playsinline webkit-playsinline crossorigin="anonymous"></video>
-    </a-assets>
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-    <a-entity id="target" mindar-image-target="targetIndex: 0">
-      <!-- A proporção do vídeo corresponde à ilustração: 2400 / 1676 ≈ 2048 / 1430 -->
-      <a-video src="#video" width="1" height="0.6982" position="0 0 0.01" material="shader: flat; side: double"></a-video>
-    </a-entity>
-  </a-scene>
-  <script>
-    const scene = document.getElementById('scene');
-    const video = document.getElementById('video');
-    const status = document.getElementById('status');
-    const target = document.getElementById('target');
-    const start = document.getElementById('startButton');
-    const screen = document.getElementById('startScreen');
-    const setStatus = text => status.textContent = text;
-    target.addEventListener('targetFound', async () => {
-      setStatus('¡La obra cobra vida!');
-      try { video.currentTime = 0; await video.play(); }
-      catch (e) { setStatus('Toca la pantalla para reproducir la animación.'); }
-    });
-    target.addEventListener('targetLost', () => { video.pause(); setStatus('Apunta la cámara hacia la ilustración.'); });
-    scene.addEventListener('arError', () => setStatus('No se pudo abrir la cámara. Revisa los permisos y usa HTTPS.'));
-    start.addEventListener('click', async () => {
-      start.disabled = true;
-      start.textContent = 'Abriendo cámara…';
-      try {
-        // Desbloquea la reproducción de vídeo en navegadores móviles.
-        await video.play(); video.pause(); video.currentTime = 0;
-        await new Promise((resolve, reject) => {
-          if (scene.hasLoaded) return resolve();
-          scene.addEventListener('loaded', resolve, {once:true});
-          setTimeout(() => reject(new Error('La escena tardó demasiado en cargar')), 20000);
-        });
-        await scene.systems['mindar-image-system'].start();
-        screen.style.display = 'none';
-        setStatus('Apunta la cámara hacia la ilustración.');
-      } catch (e) {
-        console.error(e);
-        start.disabled = false;
-        start.textContent = 'Reintentar';
-        const message = (e && e.message) || '';
-        screen.querySelector('p').textContent = 'No se pudo iniciar. Comprueba que existe targets.mind, que la web usa HTTPS y que la cámara tiene permiso. ' + message;
-      }
-    });
-    document.addEventListener('click', async () => {
-      if (screen.style.display === 'none' && target.object3D.visible && video.paused) {
-        try { await video.play(); } catch (e) { console.warn(e); }
-      }
-    });
-  </script>
-</body>
-</html>
+<section id="intro" class="screen" aria-label="Inicio"><button class="x" id="exitIntro" aria-label="Cerrar">×</button><button id="start">START</button><div id="error" role="alert"></div></section>
+<div id="cameraUI">
+ <div class="cameraTop"><button class="cameraClose" id="closeCamera" aria-label="Volver">×</button><span class="timer"><span class="redDot"></span><span id="time">00:00</span></span></div>
+ <div id="hint">Apunta la cámara hacia la ilustración.</div>
+ <div class="cameraBottom"><button class="shareMini" id="shareNow" aria-label="Compartir">↗</button><button class="shutter" id="replay" aria-label="Reproducir animación de nuevo"></button><button class="cameraGlyph" id="help" aria-label="Ayuda">▣</button></div>
+</div>
+<section id="shareScreen" class="screen" aria-label="Compartir experiencia"><div class="shareArt"><div class="burst"></div><div class="blackDisc"></div><div class="door"></div></div><div class="shareTop"><button class="back" id="backToCamera" aria-label="Volver">←</button></div><div class="shareContent"><h2>¡Escanéame en bares!</h2><div class="qrIcon">▦</div><p>Comparte la experiencia con tus amigos</p></div><div class="shareButtons"><button id="shareAction">COMPARTIR EXPERIENCIA</button><button id="restart">VOLVER A LA EXPERIENCIA</button></div></section>
+<a-scene id="scene" mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; maxTrack: 1" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
+<a-assets timeout="25000"><video id="video" src="./animacao.mp4" preload="auto" muted playsinline webkit-playsinline crossorigin="anonymous"></video></a-assets>
+<a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+<a-entity id="target" mindar-image-target="targetIndex: 0"><a-video src="#video" width="1" height="0.6982" position="0 0 0.01" material="shader: flat; side: double"></a-video></a-entity>
+</a-scene>
+<script>
+const $=id=>document.getElementById(id),scene=$('scene'),video=$('video'),target=$('target');let started=false,found=false,startedAt=0,clock=null;
+function show(id){$('intro').style.display=id==='intro'?'flex':'none';$('cameraUI').style.display=id==='cameraUI'?'flex':'none';$('shareScreen').style.display=id==='shareScreen'?'flex':'none'}
+function tick(){if(!startedAt)return;const s=Math.floor((Date.now()-startedAt)/1000);$('time').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+async function begin(){ $('start').disabled=true;$('start').textContent='…';$('error').style.display='none';try{try{await video.play();video.pause();video.currentTime=0}catch(e){}if(!scene.hasLoaded)await new Promise((resolve,reject)=>{scene.addEventListener('loaded',resolve,{once:true});setTimeout(()=>reject(Error('timeout')),25000)});await scene.systems['mindar-image-system'].start();started=true;startedAt=Date.now();clock=setInterval(tick,1000);tick();show('cameraUI')}catch(e){console.error(e);$('error').textContent='No se pudo iniciar la cámara. Comprueba el permiso, HTTPS y targets.mind.';$('error').style.display='block'}finally{$('start').disabled=false;$('start').textContent='START'}}
+async function stop(){video.pause();if(started){try{await scene.systems['mindar-image-system'].stop()}catch(e){console.warn(e)}}started=false;found=false;clearInterval(clock);startedAt=0}
+$('start').addEventListener('click',begin);$('exitIntro').addEventListener('click',()=>{if(history.length>1)history.back()});$('closeCamera').addEventListener('click',async()=>{await stop();show('intro')});
+target.addEventListener('targetFound',async()=>{found=true;$('hint').textContent='¡La obra cobra vida!';try{video.currentTime=0;await video.play()}catch(e){$('hint').textContent='Toca el botón central para reproducir.'}});
+target.addEventListener('targetLost',()=>{found=false;video.pause();$('hint').textContent='Apunta la cámara hacia la ilustración.'});
+video.addEventListener('ended',()=>{if(started){video.pause();show('shareScreen')}});
+$('replay').addEventListener('click',async()=>{if(found){video.currentTime=0;try{await video.play()}catch(e){}}else{$('hint').textContent='Enfoca primero la ilustración.'}});
+$('help').addEventListener('click',()=>{$('hint').textContent='Enfoca la ilustración completa, sin reflejos.'});
+$('shareNow').addEventListener('click',()=>{video.pause();show('shareScreen')});$('backToCamera').addEventListener('click',()=>show('cameraUI'));
+$('restart').addEventListener('click',()=>{show('cameraUI');if(found){video.currentTime=0;video.play().catch(()=>{})}});
+$('shareAction').addEventListener('click',async()=>{const data={title:'La otra sala · Experiencia AR',text:'Descubre la experiencia AR de La otra sala',url:location.href};try{if(navigator.share)await navigator.share(data);else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('shareAction').textContent='ENLACE COPIADO'}else window.prompt('Copia el enlace',location.href)}catch(e){if(e.name!=='AbortError')console.warn(e)}});
+scene.addEventListener('arError',()=>{$('hint').textContent='Error de cámara. Revisa los permisos.'});
+</script>
+</body></html>
