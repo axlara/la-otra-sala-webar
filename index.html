@@ -1026,8 +1026,6 @@ a-scene{
           alt="">
 
       </button>
-
-
     </div>
 
 
@@ -1039,16 +1037,10 @@ a-scene{
 
     </span>
 
-
   </div>
 
 
 
-  <div id="hint">
-
-    Apunta la cámara hacia la ilustración.
-
-  </div>
 
 
 
@@ -1951,8 +1943,7 @@ target
     found = true;
 
 
-    $('hint').textContent =
-      '¡La obra cobra vida!';
+   $('hint').textContent = '';
 
 
 
@@ -2066,8 +2057,7 @@ video
       video.pause();
 
 
-      $('hint').textContent =
-        '¡Comparte tu experiencia!';
+    $('hint').textContent = '';
 
 
     }
