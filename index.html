@@ -1,22 +1,25 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="theme-color" content="#ffffff" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+
 <title>La otra sala · Experiencia AR</title>
 
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
 <style>
+
 :root{
   --yellow:#f4ef00;
   --ink:#050505;
-  --muted:#858585;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   width:100%;
@@ -34,11 +37,6 @@ button{
   -webkit-tap-highlight-color:transparent;
 }
 
-button:focus-visible{
-  outline:3px solid #4d7aff;
-  outline-offset:3px;
-}
-
 .screen{
   position:fixed;
   inset:0;
@@ -47,15 +45,13 @@ button:focus-visible{
 }
 
 
-/* =========================================================
-   INTRO
-========================================================= */
 
 #intro{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:space-between;
+
   padding:
     calc(env(safe-area-inset-top) + 18px)
     24px
@@ -68,21 +64,33 @@ button:focus-visible{
   justify-content:flex-start;
 }
 
-.plain-close{
+
+
+.introClose{
+  width:38px;
+  height:38px;
   border:0;
   background:transparent;
-  font-size:25px;
-  line-height:1;
-  padding:4px;
+  padding:3px;
 }
+
+.introClose img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
 
 #start{
   width:86px;
   height:86px;
   border-radius:50%;
   border:0;
+
   background:#000;
   color:#fff;
+
   font-size:16px;
   flex-shrink:0;
 }
@@ -94,18 +102,16 @@ button:focus-visible{
 #error{
   display:none;
   position:absolute;
+
   bottom:16px;
   left:20px;
   right:20px;
+
   text-align:center;
   color:#b11;
   font-size:12px;
 }
 
-
-/* =========================================================
-   AR
-========================================================= */
 
 a-scene{
   position:fixed!important;
@@ -113,12 +119,16 @@ a-scene{
   z-index:1;
 }
 
+
 #cameraUI{
   display:none;
+
   position:fixed;
   inset:0;
   z-index:30;
+
   pointer-events:none;
+
   flex-direction:column;
   justify-content:space-between;
 
@@ -128,11 +138,13 @@ a-scene{
     calc(env(safe-area-inset-bottom) + 17px);
 }
 
+
 .cameraTop{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
 }
+
 
 .cameraLeft{
   display:flex;
@@ -142,52 +154,54 @@ a-scene{
 }
 
 
-/* SETA AMARELA ORIGINAL */
-
 .yellowBack{
   width:58px;
   height:58px;
+
   border:0;
   background:transparent;
   padding:0;
+
   pointer-events:auto;
 }
 
 .yellowBack img{
   width:100%;
   height:100%;
-  display:block;
   object-fit:contain;
+  display:block;
 }
 
 
-/* X PRETO ORIGINAL */
-
 .cameraClose{
+  width:34px;
+  height:34px;
+
   border:0;
   background:transparent;
-  width:30px;
-  height:30px;
+
   padding:3px;
-  margin-left:2px;
+  margin-left:3px;
+
   pointer-events:auto;
 }
 
 .cameraClose img{
-  display:block;
   width:100%;
   height:100%;
   object-fit:contain;
+  display:block;
 }
 
 
-/* TIMER */
-
 .timer{
   font-size:11px;
+
   background:#ffffffd9;
+
   padding:6px 9px;
   border-radius:8px;
+
   letter-spacing:.05em;
   font-variant-numeric:tabular-nums;
 }
@@ -195,74 +209,96 @@ a-scene{
 
 #hint{
   align-self:center;
+
   max-width:90%;
+
   background:#ffffffd9;
   border-radius:20px;
+
   padding:9px 14px;
+
   font-size:12px;
   text-align:center;
+
   margin:auto 0 10px;
 }
 
-
-/* =========================================================
-   PARTE INFERIOR DA CÂMERA
-========================================================= */
 
 .cameraBottom{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:0;
+
   pointer-events:auto;
 }
+
 
 .lowerTools{
   display:flex;
   align-items:center;
   justify-content:center;
+
   width:100%;
   position:relative;
+
   min-height:80px;
-  transition:transform .2s;
 }
+
 
 .blackDisc{
   position:absolute;
+
   left:50%;
   transform:translateX(-50%);
+
   width:95px;
   height:64px;
+
   border-radius:50%;
+
   background:#000;
+
   filter:blur(12px);
   opacity:.65;
+
   pointer-events:none;
 }
 
+
+
 .shareCTA{
   position:absolute;
+
   left:50%;
   transform:translateX(-50%);
+
   display:flex;
   align-items:center;
+
   gap:8px;
+
   width:max-content;
   max-width:95%;
+
   pointer-events:auto;
 }
+
 
 .shareBubble{
   width:58px;
   height:58px;
+
   flex:0 0 58px;
+
   background:transparent;
   border:0;
+
   padding:0;
+
   display:grid;
   place-items:center;
-  transition:transform .2s;
 }
+
 
 .shareBubble svg{
   width:58px;
@@ -270,154 +306,198 @@ a-scene{
   display:block;
 }
 
+
 .shareBubble:active{
   transform:scale(.94);
 }
 
+
 .shareMessage{
   border:0;
+
   border-radius:27px;
+
   background:var(--yellow);
+
   padding:10px 14px;
+
   min-height:47px;
-  max-width:175px;
+  max-width:190px;
+
   color:#000;
+
   text-align:left;
+
   font-size:10px;
   font-weight:700;
   line-height:1.2;
 }
 
 
-/* =========================================================
-   REDES SOCIAIS
-========================================================= */
 
 #socialTray{
   position:fixed;
+
   left:0;
   right:0;
   bottom:0;
+
   z-index:90;
+
   background:#fff;
-  padding:13px 12px calc(env(safe-area-inset-bottom) + 14px);
+
+  padding:
+    18px
+    10px
+    calc(env(safe-area-inset-bottom) + 18px);
+
   box-shadow:0 -6px 18px #0002;
+
   display:none;
+
   pointer-events:auto;
 }
+
 
 #socialTray.visible{
   display:block;
 }
 
-.socialTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  font-size:11px;
-  margin-bottom:13px;
-}
 
-.socialTop button{
-  background:none;
-  border:0;
-  font-size:20px;
-  padding:0 6px;
-}
 
 .socialLinks{
   display:flex;
+
   align-items:flex-start;
-  gap:16px;
+  justify-content:space-around;
+
+  gap:14px;
+
   overflow-x:auto;
+
   scrollbar-width:none;
 }
+
 
 .socialLinks::-webkit-scrollbar{
   display:none;
 }
 
+
 .socialLink{
-  min-width:58px;
+  min-width:62px;
+
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:5px;
+
+  gap:6px;
+
   border:0;
   background:transparent;
-  padding:0 0 5px;
+
+  padding:0 0 4px;
+
   font-size:9px;
+
   color:#555;
 }
 
+
+/* ÍCONES MAIORES */
+
 .socialIcon{
-  width:36px;
-  height:36px;
-  border-radius:9px;
+  width:46px;
+  height:46px;
+
+  border-radius:11px;
+
   display:grid;
   place-items:center;
+
   color:#fff;
-  font-size:25px;
+
+  font-size:30px;
   font-weight:700;
 }
 
+
 .socialIcon.x{
   background:#050505;
-  font-size:25px;
+  font-size:31px;
   font-weight:400;
 }
 
+
 .socialIcon.ig{
-  background:linear-gradient(35deg,#ffb800,#f30a67 48%,#8525e7);
+  background:
+    linear-gradient(
+      35deg,
+      #ffb800,
+      #f30a67 48%,
+      #8525e7
+    );
 }
+
 
 .socialIcon.wa{
   background:#20c862;
 }
 
+
 .socialIcon.fb{
   background:#1266e8;
+
   font-family:Arial;
-  font-size:30px;
+  font-size:36px;
 }
+
 
 .socialIcon.tg{
   background:#28a7e8;
-  font-size:24px;
+  font-size:30px;
 }
+
 
 .socialIcon.more{
   background:#222;
-  font-size:22px;
+  font-size:27px;
 }
 
+
 .socialIcon svg{
-  width:25px;
-  height:25px;
+  width:31px;
+  height:31px;
+
   fill:none;
   stroke:currentColor;
   stroke-width:2;
 }
 
+
 #shareFeedback{
   font-size:11px;
+
   color:#333;
+
   text-align:center;
-  min-height:15px;
-  margin-top:9px;
+
+  min-height:4px;
+  margin-top:5px;
 }
 
 
-/* =========================================================
+/* =====================================================
    SHARE SCREEN
-========================================================= */
+===================================================== */
 
 #shareScreen{
   display:none;
+
   flex-direction:column;
   align-items:center;
   justify-content:space-between;
+
   overflow:hidden;
 
   padding:
@@ -426,47 +506,69 @@ a-scene{
     calc(env(safe-area-inset-bottom) + 46px);
 }
 
+
 .shareBack{
   align-self:flex-start;
   z-index:3;
 }
 
+
 .shareTitle{
   z-index:3;
+
   position:relative;
+
   text-align:center;
+
   font-size:13px;
+
   margin:4px 0 0;
 }
 
+
 .shareQr{
   z-index:3;
+
   position:relative;
+
   background:#fff;
+
   border-radius:50%;
+
   width:55px;
   height:55px;
+
   display:grid;
   place-items:center;
+
   margin:10px auto 0;
 }
+
 
 .shareQr svg{
   width:32px;
   height:32px;
 }
 
+
 .shareStage{
   position:absolute;
+
   inset:15% -9% 16% -10%;
+
   pointer-events:none;
+
   overflow:hidden;
 }
 
+
 .shareStage .star{
   position:absolute;
+
   inset:8% -20% 7% 2%;
+
   background:var(--yellow);
+
   clip-path:polygon(
     0 50%,
     25% 44%,
@@ -485,216 +587,327 @@ a-scene{
   );
 }
 
+
 .shareStage .disc{
   position:absolute;
+
   right:20%;
   top:4%;
+
   width:min(28vw,130px);
+
   aspect-ratio:1;
+
   border-radius:50%;
+
   background:#000;
 }
+
 
 .shareStage .door{
   position:absolute;
+
   left:21%;
   top:35%;
+
   height:39%;
   width:28%;
+
   max-width:140px;
+
   background:var(--yellow);
-  clip-path:polygon(0 19%,100% 0,100% 83%,0 100%);
+
+  clip-path:polygon(
+    0 19%,
+    100% 0,
+    100% 83%,
+    0 100%
+  );
 }
+
 
 .shareStage .door:after{
   content:'';
+
   position:absolute;
+
   top:53%;
   left:45%;
+
   width:12px;
   height:7px;
+
   border-radius:50%;
+
   background:#fff;
 }
+
 
 .shareFooter{
   position:relative;
+
   z-index:3;
+
   display:flex;
   flex-direction:column;
   align-items:center;
+
   gap:14px;
+
   text-align:center;
 }
 
+
 .thanks{
   font-size:13px;
+
   border:1px solid #000;
+
   border-radius:30px;
+
   padding:12px 24px;
+
   background:#fff;
+
   transform:rotate(-9deg);
 }
 
+
 .shareCaption{
   font-size:11px;
+
   background:#fff;
+
   padding:6px 10px;
+
   border-radius:15px;
 }
 
+
 .shareButton{
   border:0;
+
   border-radius:30px;
+
   padding:13px 25px;
+
   background:#000;
+
   color:#fff;
+
   font-size:12px;
 }
 
+
 .shareButton.secondary{
   background:#fff;
+
   color:#000;
+
   border:1px solid #000;
 }
 
 
-/* =========================================================
-   TELA FINAL
-========================================================= */
 
 #finalScreen{
   display:none;
+
   position:fixed;
+
   inset:0;
+
   z-index:100;
+
   overflow:hidden;
+
   background:#fff;
+
   padding:0;
+
   isolation:isolate;
 }
 
+
 .finalContent{
   position:relative;
+
   width:100%;
   height:100%;
+
   max-width:440px;
+
   margin:0 auto;
+
   overflow:hidden;
+
   background:#fff;
 }
 
+
 .finalArt{
   position:absolute;
+
   z-index:0;
+
   width:100%;
   height:78%;
+
   left:0;
   bottom:0;
+
   object-fit:fill;
+
   pointer-events:none;
 }
 
 
-/* BOTÃO VOLTAR FINAL */
+/* VOLTAR */
 
 .finalBack{
   position:absolute;
+
   z-index:5;
+
   top:calc(env(safe-area-inset-top) + 24px);
   left:24px;
+
   width:58px;
   height:58px;
+
   border:0;
+
   background:none;
+
   padding:0;
 }
+
 
 .finalBack img{
   width:100%;
   height:100%;
+
   object-fit:contain;
 }
 
 
 .finalLabel{
   position:absolute;
+
   z-index:3;
+
   top:calc(env(safe-area-inset-top) + 92px);
+
   left:22%;
+
   width:133px;
+
   max-width:43%;
+
   height:auto;
 }
 
+
 .finalQR{
   position:absolute;
+
   z-index:3;
+
   top:calc(env(safe-area-inset-top) + 118px);
+
   left:31%;
+
   width:64px;
   height:64px;
+
   object-fit:contain;
 }
 
 
-/* SOMENTE UM SELO BEBIDA GRATIS */
 
 .finalBadge{
   position:absolute;
+
   z-index:4;
+
   top:calc(env(safe-area-inset-top) + 135px);
+
   right:4%;
+
   width:48%;
+
   max-width:210px;
+
   aspect-ratio:1;
+
   object-fit:contain;
 }
 
 
 .finalThanks{
   position:absolute;
+
   z-index:5;
+
   left:50%;
+
   transform:translateX(-50%);
+
   bottom:calc(env(safe-area-inset-bottom) + 34px);
+
   width:68%;
+
   max-width:270px;
+
   height:auto;
+
   object-fit:contain;
 }
 
 
-/* =========================================================
-   RESPONSIVO
-========================================================= */
+/* =====================================================
+   RESPONSIVE
+===================================================== */
 
 @media(min-width:600px){
 
   #socialTray{
     max-width:440px;
+
     left:50%;
     right:auto;
+
     width:100%;
+
     transform:translateX(-50%);
   }
+
 
   #intro,
   #shareScreen{
+
     max-width:440px;
+
     left:50%;
     right:auto;
+
     width:100%;
+
     transform:translateX(-50%);
   }
 
+
   #cameraUI{
+
     max-width:440px;
+
     left:50%;
     right:auto;
+
     width:100%;
+
     transform:translateX(-50%);
   }
+
 }
 
 
@@ -702,21 +915,31 @@ a-scene{
 
   .finalBadge{
     width:38%;
-    top:calc(env(safe-area-inset-top) + 90px);
+
+    top:
+      calc(env(safe-area-inset-top) + 90px);
   }
+
 
   .finalLabel{
-    top:calc(env(safe-area-inset-top) + 67px);
+    top:
+      calc(env(safe-area-inset-top) + 67px);
   }
 
+
   .finalQR{
-    top:calc(env(safe-area-inset-top) + 93px);
+    top:
+      calc(env(safe-area-inset-top) + 93px);
   }
+
 
   .finalThanks{
     width:55%;
-    bottom:calc(env(safe-area-inset-bottom) + 12px);
+
+    bottom:
+      calc(env(safe-area-inset-bottom) + 12px);
   }
+
 }
 
 </style>
@@ -726,70 +949,131 @@ a-scene{
 <body>
 
 
-<!-- ======================================================
-     INTRO
-======================================================= -->
+<!-- =====================================================
+     START
+===================================================== -->
 
-<section id="intro" class="screen" aria-label="Inicio">
+<section
+  id="intro"
+  class="screen"
+  aria-label="Inicio">
+
 
   <div class="intro-top">
 
-    <button id="exitIntro" class="plain-close" aria-label="Cerrar">
-      ×
+    <button
+      id="exitIntro"
+      class="introClose"
+      aria-label="Cerrar">
+
+      <img
+        src="./close.png"
+        alt="">
+
     </button>
 
   </div>
 
-  <button id="start">START</button>
 
-  <div id="error" role="alert"></div>
+  <button id="start">
+    START
+  </button>
+
+
+  <div
+    id="error"
+    role="alert">
+  </div>
 
 </section>
 
 
 
-<!-- ======================================================
-     CAMERA AR
-======================================================= -->
+<!-- =====================================================
+     CÂMERA
+===================================================== -->
 
-<div id="cameraUI" aria-label="Cámara AR">
+<div
+  id="cameraUI"
+  aria-label="Cámara AR">
+
 
   <div class="cameraTop">
 
+
     <div class="cameraLeft">
 
-      <button id="backCamera" class="yellowBack" aria-label="Volver">
-        <img src="./back.png" alt="">
+
+      <button
+        id="backCamera"
+        class="yellowBack"
+        aria-label="Volver">
+
+        <img
+          src="./back.png"
+          alt="">
+
       </button>
 
-      <button id="closeCamera" class="cameraClose" aria-label="Cerrar">
-        <img src="./close.png" alt="">
+
+      <button
+        id="closeCamera"
+        class="cameraClose"
+        aria-label="Cerrar">
+
+        <img
+          src="./close.png"
+          alt="">
+
       </button>
+
 
     </div>
 
-    <span class="timer" id="time">00:00</span>
+
+    <span
+      class="timer"
+      id="time">
+
+      00:00
+
+    </span>
+
 
   </div>
+
 
 
   <div id="hint">
+
     Apunta la cámara hacia la ilustración.
+
   </div>
+
 
 
   <div class="cameraBottom">
 
+
     <div class="lowerTools">
 
-      <div class="blackDisc" aria-hidden="true"></div>
+
+      <div
+        class="blackDisc"
+        aria-hidden="true">
+      </div>
+
 
       <div class="shareCTA">
+
+
+        <!-- BOTÃO AMARELO SHARE -->
 
         <button
           id="shareNow"
           class="shareBubble"
-          aria-label="Mostrar redes sociales para compartir">
+          aria-label="Compartir">
+
 
           <svg
             viewBox="0 0 80 80"
@@ -798,11 +1082,13 @@ a-scene{
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg">
 
+
             <circle
               cx="40"
               cy="40"
               r="38"
               fill="#f4ef00"/>
+
 
             <g
               fill="none"
@@ -810,22 +1096,39 @@ a-scene{
               stroke-width="4.2"
               stroke-linecap="round">
 
-              <path d="M26 39L51 25M26 41L51 55"/>
+              <path
+                d="M26 39L51 25M26 41L51 55"/>
 
             </g>
+
 
             <g fill="#000">
 
-              <circle cx="24" cy="40" r="7"/>
-              <circle cx="53" cy="23" r="7"/>
-              <circle cx="53" cy="57" r="7"/>
+              <circle
+                cx="24"
+                cy="40"
+                r="7"/>
+
+              <circle
+                cx="53"
+                cy="23"
+                r="7"/>
+
+              <circle
+                cx="53"
+                cy="57"
+                r="7"/>
 
             </g>
+
 
           </svg>
 
         </button>
 
+
+
+        <!-- ÚNICO TEXTO DE COMPARTILHAR -->
 
         <button
           id="shareMessage"
@@ -836,47 +1139,51 @@ a-scene{
 
         </button>
 
+
       </div>
+
 
     </div>
 
+
   </div>
+
 
 </div>
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      REDES SOCIAIS
-======================================================= -->
+===================================================== -->
 
 <div
   id="socialTray"
   role="dialog"
   aria-label="Compartir en redes sociales">
 
-  <div class="socialTop">
-
-    <strong>COMPARTE TU EXPERIENCIA</strong>
-
-    <button
-      id="closeSocial"
-      aria-label="Cerrar redes sociales">
-      ×
-    </button>
-
-  </div>
-
 
   <div class="socialLinks">
 
-    <button class="socialLink" data-social="x">
-      <span class="socialIcon x">𝕏</span>
+
+    <button
+      class="socialLink"
+      data-social="x">
+
+      <span class="socialIcon x">
+        𝕏
+      </span>
+
       <span>Post</span>
+
     </button>
 
 
-    <button class="socialLink" data-social="instagram">
+
+    <button
+      class="socialLink"
+      data-social="instagram">
+
 
       <span class="socialIcon ig">
 
@@ -910,7 +1217,11 @@ a-scene{
     </button>
 
 
-    <button class="socialLink" data-social="whatsapp">
+
+    <button
+      class="socialLink"
+      data-social="whatsapp">
+
 
       <span class="socialIcon wa">
 
@@ -932,31 +1243,47 @@ a-scene{
     </button>
 
 
-    <button class="socialLink" data-social="facebook">
 
-      <span class="socialIcon fb">f</span>
+    <button
+      class="socialLink"
+      data-social="facebook">
+
+      <span class="socialIcon fb">
+        f
+      </span>
 
       <span>Feed</span>
 
     </button>
 
 
-    <button class="socialLink" data-social="telegram">
 
-      <span class="socialIcon tg">➤</span>
+    <button
+      class="socialLink"
+      data-social="telegram">
+
+      <span class="socialIcon tg">
+        ➤
+      </span>
 
       <span>Telegram</span>
 
     </button>
 
 
-    <button class="socialLink" data-social="more">
 
-      <span class="socialIcon more">···</span>
+    <button
+      class="socialLink"
+      data-social="more">
+
+      <span class="socialIcon more">
+        ···
+      </span>
 
       <span>Más</span>
 
     </button>
+
 
   </div>
 
@@ -966,13 +1293,14 @@ a-scene{
     aria-live="polite">
   </div>
 
+
 </div>
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      SHARE SCREEN
-======================================================= -->
+===================================================== -->
 
 <section
   id="shareScreen"
@@ -985,9 +1313,12 @@ a-scene{
     class="yellowBack shareBack"
     aria-label="Volver">
 
-    <img src="./back.png" alt="">
+    <img
+      src="./back.png"
+      alt="">
 
   </button>
+
 
 
   <div>
@@ -996,9 +1327,11 @@ a-scene{
       ¡Escanéame en bares!
     </p>
 
+
     <div
       class="shareQr"
       aria-hidden="true">
+
 
       <svg
         viewBox="0 0 24 24"
@@ -1006,17 +1339,40 @@ a-scene{
         stroke="currentColor"
         stroke-width="2">
 
-        <rect x="2" y="2" width="7" height="7"/>
-        <rect x="15" y="2" width="7" height="7"/>
-        <rect x="2" y="15" width="7" height="7"/>
 
-        <path d="M15 15h3v3h-3zm6 0v4h-3m-3 2h4"/>
+        <rect
+          x="2"
+          y="2"
+          width="7"
+          height="7"/>
+
+
+        <rect
+          x="15"
+          y="2"
+          width="7"
+          height="7"/>
+
+
+        <rect
+          x="2"
+          y="15"
+          width="7"
+          height="7"/>
+
+
+        <path
+          d="M15 15h3v3h-3zm6 0v4h-3m-3 2h4"/>
+
 
       </svg>
 
+
     </div>
 
+
   </div>
+
 
 
   <div class="shareStage">
@@ -1030,11 +1386,14 @@ a-scene{
   </div>
 
 
+
   <div class="shareFooter">
+
 
     <div class="thanks">
       GRACIAS
     </div>
+
 
     <div class="shareCaption">
       por compartir
@@ -1058,15 +1417,17 @@ a-scene{
 
     </button>
 
+
   </div>
+
 
 </section>
 
 
 
-<!-- ======================================================
-     TELA FINAL
-======================================================= -->
+<!-- =====================================================
+     FINAL
+===================================================== -->
 
 <section
   id="finalScreen"
@@ -1089,11 +1450,14 @@ a-scene{
       id="backFromFinal"
       aria-label="Volver al inicio">
 
+
       <img
         src="./back.png"
         alt="">
 
+
     </button>
+
 
 
     <img
@@ -1102,17 +1466,21 @@ a-scene{
       alt="¡Escanéame en barra!">
 
 
+
     <img
       class="finalQR"
       src="./final-qr.png"
       alt="Símbolo de código QR">
 
 
+
     <!-- SOMENTE UM SELO -->
+
     <img
       class="finalBadge"
       src="./final-badge.png"
-      alt="Bebida gratis — propuesta visual de la campaña">
+      alt="Bebida gratis">
+
 
 
     <img
@@ -1123,16 +1491,18 @@ a-scene{
 
   </div>
 
+
 </section>
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      MIND AR
-======================================================= -->
+===================================================== -->
 
 <a-scene
   id="scene"
+
   mindar-image="
     imageTargetSrc: ./targets.mind;
     autoStart: false;
@@ -1140,14 +1510,20 @@ a-scene{
     uiScanning: no;
     uiError: no;
     maxTrack: 1"
+
   color-space="sRGB"
+
   renderer="colorManagement: true"
+
   vr-mode-ui="enabled: false"
+
   device-orientation-permission-ui="enabled: false"
+
   embedded>
 
 
   <a-assets timeout="30000">
+
 
     <video
       id="video"
@@ -1159,7 +1535,9 @@ a-scene{
       crossorigin="anonymous">
     </video>
 
+
   </a-assets>
+
 
 
   <a-camera
@@ -1168,9 +1546,11 @@ a-scene{
   </a-camera>
 
 
+
   <a-entity
     id="target"
     mindar-image-target="targetIndex: 0">
+
 
     <a-video
       src="#video"
@@ -1179,6 +1559,7 @@ a-scene{
       position="0 0 0.01"
       material="shader: flat; side: double">
     </a-video>
+
 
   </a-entity>
 
@@ -1189,15 +1570,19 @@ a-scene{
 
 <script>
 
-/* =========================================================
-   VARIÁVEIS
-========================================================= */
+const $ = id =>
+  document.getElementById(id);
 
-const $ = id => document.getElementById(id);
 
-const scene = $('scene');
-const video = $('video');
-const target = $('target');
+const scene =
+  $('scene');
+
+const video =
+  $('video');
+
+const target =
+  $('target');
+
 
 let started = false;
 let found = false;
@@ -1207,46 +1592,75 @@ let showShareOnEnd = true;
 
 
 
-/* =========================================================
-   TELAS
-========================================================= */
+/* =====================================================
+   SCREEN
+===================================================== */
 
 function show(id){
 
   $('intro').style.display =
-    id === 'intro' ? 'flex' : 'none';
+    id === 'intro'
+    ? 'flex'
+    : 'none';
+
 
   $('cameraUI').style.display =
-    id === 'cameraUI' ? 'flex' : 'none';
+    id === 'cameraUI'
+    ? 'flex'
+    : 'none';
+
 
   $('shareScreen').style.display =
-    id === 'shareScreen' ? 'flex' : 'none';
+    id === 'shareScreen'
+    ? 'flex'
+    : 'none';
+
 
   $('finalScreen').style.display =
-    id === 'finalScreen' ? 'block' : 'none';
+    id === 'finalScreen'
+    ? 'block'
+    : 'none';
+
 
   if(id !== 'cameraUI'){
+
     closeSocial();
+
   }
+
 }
 
 
 
-/* =========================================================
+/* =====================================================
    TIMER
-========================================================= */
+===================================================== */
 
 function stamp(s){
 
-  s = Math.max(0,Math.floor(s || 0));
+  s =
+    Math.max(
+      0,
+      Math.floor(s || 0)
+    );
 
-  return String(Math.floor(s/60)).padStart(2,'0')
-    + ':'
-    + String(s%60).padStart(2,'0');
+
+  return String(
+    Math.floor(s / 60)
+  ).padStart(2,'0')
+
+  + ':'
+
+  + String(
+    s % 60
+  ).padStart(2,'0');
+
 }
 
 
+
 function sync(){}
+
 
 
 function tick(){
@@ -1254,7 +1668,9 @@ function tick(){
   if(startedAt){
 
     $('time').textContent =
-      stamp((Date.now()-startedAt)/1000);
+      stamp(
+        (Date.now() - startedAt) / 1000
+      );
 
   }
 
@@ -1262,17 +1678,21 @@ function tick(){
 
 
 
-/* =========================================================
-   INICIAR AR
-========================================================= */
+/* =====================================================
+   START AR
+===================================================== */
 
 async function begin(){
 
   $('start').disabled = true;
+
   $('start').textContent = '…';
+
   $('error').style.display = 'none';
 
+
   try{
+
 
     try{
 
@@ -1282,27 +1702,38 @@ async function begin(){
 
       video.currentTime = 0;
 
-    }catch(e){}
+    }
+    catch(e){}
+
 
 
     if(!scene.hasLoaded){
 
-      await new Promise((resolve,reject)=>{
 
-        scene.addEventListener(
-          'loaded',
-          resolve,
-          {once:true}
-        );
+      await new Promise(
+        (resolve,reject)=>{
 
-        setTimeout(
-          ()=>reject(Error('scene timeout')),
-          30000
-        );
 
-      });
+          scene.addEventListener(
+            'loaded',
+            resolve,
+            {once:true}
+          );
+
+
+          setTimeout(
+            ()=>reject(
+              Error('scene timeout')
+            ),
+            30000
+          );
+
+
+        }
+      );
 
     }
+
 
 
     await scene
@@ -1310,31 +1741,50 @@ async function begin(){
       .start();
 
 
+
     started = true;
 
     startedAt = Date.now();
 
-    clock = setInterval(tick,1000);
+
+    clock =
+      setInterval(
+        tick,
+        1000
+      );
+
 
     tick();
 
     show('cameraUI');
 
 
-  }catch(e){
+  }
+  catch(e){
+
 
     console.error(e);
+
 
     $('error').textContent =
       'No se pudo iniciar la cámara. Revisa los permisos, HTTPS y targets.mind.';
 
-    $('error').style.display = 'block';
 
-  }finally{
+    $('error').style.display =
+      'block';
 
-    $('start').disabled = false;
 
-    $('start').textContent = 'START';
+  }
+  finally{
+
+
+    $('start').disabled =
+      false;
+
+
+    $('start').textContent =
+      'START';
+
 
   }
 
@@ -1342,36 +1792,50 @@ async function begin(){
 
 
 
-/* =========================================================
-   PARAR AR
-========================================================= */
+/* =====================================================
+   STOP
+===================================================== */
 
 async function stop(){
 
+
   video.pause();
+
 
   if(started){
 
+
     try{
+
 
       await scene
         .systems['mindar-image-system']
         .stop();
 
-    }catch(e){
+
+    }
+    catch(e){
+
 
       console.warn(e);
 
+
     }
+
 
   }
 
+
   started = false;
+
   found = false;
+
 
   clearInterval(clock);
 
+
   startedAt = 0;
+
 
   sync();
 
@@ -1379,33 +1843,44 @@ async function stop(){
 
 
 
-/* =========================================================
-   REPRODUZIR NOVAMENTE
-========================================================= */
+/* =====================================================
+   PLAY AGAIN
+===================================================== */
 
 async function playAgain(){
 
+
   if(!found){
+
 
     $('hint').textContent =
       'Enfoca primero la ilustración.';
+
 
     return;
 
   }
 
+
   video.currentTime = 0;
+
 
   showShareOnEnd = true;
 
+
   try{
+
 
     await video.play();
 
-  }catch(e){
+
+  }
+  catch(e){
+
 
     $('hint').textContent =
       'Toca ▶ para reproducir.';
+
 
   }
 
@@ -1413,17 +1888,20 @@ async function playAgain(){
 
 
 
-/* =========================================================
-   BOTÕES
-========================================================= */
+/* =====================================================
+   BUTONS
+===================================================== */
 
-$('start').addEventListener(
+$('start')
+.addEventListener(
   'click',
   begin
 );
 
 
-$('exitIntro').addEventListener(
+
+$('exitIntro')
+.addEventListener(
   'click',
   ()=>{
 
@@ -1437,9 +1915,15 @@ $('exitIntro').addEventListener(
 );
 
 
-for(const id of ['closeCamera','backCamera']){
 
-  $(id).addEventListener(
+for(
+  const id
+  of
+  ['closeCamera','backCamera']
+){
+
+  $(id)
+  .addEventListener(
     'click',
     async()=>{
 
@@ -1454,455 +1938,554 @@ for(const id of ['closeCamera','backCamera']){
 
 
 
-/* =========================================================
-   TARGET AR
-========================================================= */
+/* =====================================================
+   TARGET
+===================================================== */
 
-target.addEventListener(
+target
+.addEventListener(
   'targetFound',
   async()=>{
 
+
     found = true;
+
 
     $('hint').textContent =
       '¡La obra cobra vida!';
 
 
+
     if(
-      $('shareScreen').style.display === 'flex'
+      $('shareScreen')
+      .style
+      .display === 'flex'
     ){
+
       return;
+
     }
+
 
 
     video.currentTime = 0;
 
+
     showShareOnEnd = true;
+
 
 
     try{
 
+
       await video.play();
 
-    }catch(e){
+
+    }
+    catch(e){
+
 
       $('hint').textContent =
         'Pulsa ▶ para reproducir.';
 
+
     }
+
 
   }
 );
 
 
-target.addEventListener(
+
+target
+.addEventListener(
   'targetLost',
   ()=>{
 
+
     found = false;
 
+
     video.pause();
+
 
     $('hint').textContent =
       'Apunta la cámara hacia la ilustración.';
 
+
   }
 );
 
 
-video.addEventListener(
+
+video
+.addEventListener(
   'timeupdate',
   sync
 );
 
-video.addEventListener(
+
+video
+.addEventListener(
   'loadedmetadata',
   sync
 );
 
-video.addEventListener(
+
+video
+.addEventListener(
   'play',
   sync
 );
 
-video.addEventListener(
+
+video
+.addEventListener(
   'pause',
   sync
 );
 
 
-video.addEventListener(
+
+video
+.addEventListener(
   'ended',
   ()=>{
 
+
     sync();
 
-    if(started && showShareOnEnd){
+
+    if(
+      started
+      &&
+      showShareOnEnd
+    ){
+
 
       video.pause();
+
 
       $('hint').textContent =
         '¡Comparte tu experiencia!';
 
+
     }
+
 
   }
 );
 
 
 
-/* =========================================================
-   REDES SOCIAIS
-========================================================= */
+/* =====================================================
+   REDES
+===================================================== */
 
 function closeSocial(){
+
 
   $('socialTray')
     .classList
     .remove('visible');
 
+
   $('shareFeedback')
     .textContent = '';
+
 
 }
 
 
+
 function openSocial(){
+
 
   $('socialTray')
     .classList
     .add('visible');
 
+
 }
+
 
 
 $('shareNow')
-  .addEventListener(
-    'click',
-    openSocial
-  );
-
-
-$('shareMessage')
-  .addEventListener(
-    'click',
-    openSocial
-  );
-
-
-$('closeSocial')
-  .addEventListener(
-    'click',
-    closeSocial
-  );
-
-
-
-/* =========================================================
-   SHARE NATIVO
-========================================================= */
-
-async function shareNative(){
-
-  const data = {
-
-    title:
-      'La otra sala · Experiencia AR',
-
-    text:
-      'Descubre la experiencia AR de La otra sala',
-
-    url:
-      location.href
-
-  };
-
-
-  if(navigator.share){
-
-    await navigator.share(data);
-
-  }
-
-  else if(navigator.clipboard){
-
-    await navigator.clipboard
-      .writeText(location.href);
-
-    $('shareFeedback')
-      .textContent =
-      'Enlace copiado para compartir';
-
-  }
-
-  else{
-
-    window.prompt(
-      'Copia el enlace',
-      location.href
-    );
-
-  }
-
-}
-
-
-
-/* =========================================================
-   TELA FINAL
-========================================================= */
-
-function finishSocialFlow(){
-
-  show('finalScreen');
-
-  stop();
-
-}
-
-
-document
-  .querySelectorAll('[data-social]')
-  .forEach(btn =>
-
-    btn.addEventListener(
-      'click',
-      ()=>{
-
-        const kind =
-          btn.dataset.social;
-
-        const link =
-          encodeURIComponent(location.href);
-
-        const msg =
-          encodeURIComponent(
-            'Descubre la experiencia AR de La otra sala'
-          );
-
-
-        try{
-
-          if(kind === 'x'){
-
-            window.open(
-              'https://twitter.com/intent/tweet?text='
-              + msg
-              + '&url='
-              + link,
-              '_blank',
-              'noopener'
-            );
-
-          }
-
-          else if(kind === 'whatsapp'){
-
-            window.open(
-              'https://api.whatsapp.com/send?text='
-              + msg
-              + '%20'
-              + link,
-              '_blank',
-              'noopener'
-            );
-
-          }
-
-          else if(kind === 'facebook'){
-
-            window.open(
-              'https://www.facebook.com/sharer/sharer.php?u='
-              + link,
-              '_blank',
-              'noopener'
-            );
-
-          }
-
-          else if(kind === 'telegram'){
-
-            window.open(
-              'https://t.me/share/url?url='
-              + link
-              + '&text='
-              + msg,
-              '_blank',
-              'noopener'
-            );
-
-          }
-
-          else if(kind === 'instagram'){
-
-            if(navigator.clipboard){
-
-              navigator.clipboard
-                .writeText(location.href)
-                .catch(()=>{});
-
-            }
-
-          }
-
-          else if(navigator.share){
-
-            navigator.share({
-
-              title:
-                'La otra sala · Experiencia AR',
-
-              url:
-                location.href
-
-            }).catch(()=>{});
-
-          }
-
-        }catch(e){
-
-          console.warn(
-            'No se pudo abrir el servicio de compartir:',
-            e
-          );
-
-        }
-
-
-        finishSocialFlow();
-
-      }
-    )
-
-  );
-
-
-
-/* =========================================================
-   VOLTAR DA TELA FINAL
-========================================================= */
-
-$('backFromFinal')
-  .addEventListener(
-    'click',
-    ()=>show('intro')
-  );
-
-
-$('backToCamera')
-  .addEventListener(
-    'click',
-    ()=>{
-
-      show('cameraUI');
-
-      $('hint').textContent =
-        found
-          ? 'Pulsa ▶ para continuar.'
-          : 'Apunta la cámara hacia la ilustración.';
-
-    }
-  );
-
-
-$('restart')
-  .addEventListener(
-    'click',
-    ()=>{
-
-      show('cameraUI');
-
-      playAgain();
-
-    }
-  );
-
-
-
-/* =========================================================
-   COMPARTILHAR
-========================================================= */
-
-$('shareAction')
-  .addEventListener(
-    'click',
-    async()=>{
-
-      const data = {
-
-        title:
-          'La otra sala · Experiencia AR',
-
-        text:
-          'Descubre la experiencia AR de La otra sala',
-
-        url:
-          location.href
-
-      };
-
-
-      try{
-
-        if(navigator.share){
-
-          await navigator.share(data);
-
-          show('finalScreen');
-
-          stop();
-
-        }
-
-        else if(navigator.clipboard){
-
-          await navigator.clipboard
-            .writeText(location.href);
-
-          $('shareAction')
-            .textContent =
-            'ENLACE COPIADO';
-
-          show('finalScreen');
-
-          stop();
-
-        }
-
-        else{
-
-          window.prompt(
-            'Copia el enlace',
-            location.href
-          );
-
-        }
-
-      }catch(e){
-
-        if(e.name !== 'AbortError'){
-
-          console.warn(e);
-
-        }
-
-      }
-
-    }
+.addEventListener(
+  'click',
+  openSocial
 );
 
 
 
-/* =========================================================
-   ERRO AR
-========================================================= */
+$('shareMessage')
+.addEventListener(
+  'click',
+  openSocial
+);
 
-scene.addEventListener(
+
+
+/* =====================================================
+   FINAL
+===================================================== */
+
+function finishSocialFlow(){
+
+
+  show('finalScreen');
+
+
+  stop();
+
+
+}
+
+
+
+document
+.querySelectorAll('[data-social]')
+.forEach(
+
+  btn =>
+
+  btn.addEventListener(
+    'click',
+    ()=>{
+
+
+      const kind =
+        btn.dataset.social;
+
+
+      const link =
+        encodeURIComponent(
+          location.href
+        );
+
+
+      const msg =
+        encodeURIComponent(
+          'Descubre la experiencia AR de La otra sala'
+        );
+
+
+
+      try{
+
+
+        if(kind === 'x'){
+
+
+          window.open(
+            'https://twitter.com/intent/tweet?text='
+            + msg
+            + '&url='
+            + link,
+            '_blank',
+            'noopener'
+          );
+
+
+        }
+
+
+        else if(
+          kind === 'whatsapp'
+        ){
+
+
+          window.open(
+            'https://api.whatsapp.com/send?text='
+            + msg
+            + '%20'
+            + link,
+            '_blank',
+            'noopener'
+          );
+
+
+        }
+
+
+        else if(
+          kind === 'facebook'
+        ){
+
+
+          window.open(
+            'https://www.facebook.com/sharer/sharer.php?u='
+            + link,
+            '_blank',
+            'noopener'
+          );
+
+
+        }
+
+
+        else if(
+          kind === 'telegram'
+        ){
+
+
+          window.open(
+            'https://t.me/share/url?url='
+            + link
+            + '&text='
+            + msg,
+            '_blank',
+            'noopener'
+          );
+
+
+        }
+
+
+        else if(
+          kind === 'instagram'
+        ){
+
+
+          if(
+            navigator.clipboard
+          ){
+
+
+            navigator.clipboard
+              .writeText(
+                location.href
+              )
+              .catch(()=>{});
+
+
+          }
+
+
+        }
+
+
+        else if(
+          navigator.share
+        ){
+
+
+          navigator.share({
+
+            title:
+              'La otra sala · Experiencia AR',
+
+            url:
+              location.href
+
+          })
+          .catch(()=>{});
+
+
+        }
+
+
+      }
+      catch(e){
+
+
+        console.warn(
+          'No se pudo abrir el servicio de compartir:',
+          e
+        );
+
+
+      }
+
+
+
+      finishSocialFlow();
+
+
+    }
+
+  )
+
+);
+
+
+
+/* =====================================================
+   VOLTAR
+===================================================== */
+
+$('backFromFinal')
+.addEventListener(
+  'click',
+  ()=>{
+
+    show('intro');
+
+  }
+);
+
+
+
+$('backToCamera')
+.addEventListener(
+  'click',
+  ()=>{
+
+
+    show('cameraUI');
+
+
+    $('hint').textContent =
+      found
+
+      ? 'Pulsa ▶ para continuar.'
+
+      : 'Apunta la cámara hacia la ilustración.';
+
+
+  }
+);
+
+
+
+$('restart')
+.addEventListener(
+  'click',
+  ()=>{
+
+
+    show('cameraUI');
+
+
+    playAgain();
+
+
+  }
+);
+
+
+
+/* =====================================================
+   SHARE ACTION
+===================================================== */
+
+$('shareAction')
+.addEventListener(
+  'click',
+  async()=>{
+
+
+    const data = {
+
+      title:
+        'La otra sala · Experiencia AR',
+
+      text:
+        'Descubre la experiencia AR de La otra sala',
+
+      url:
+        location.href
+
+    };
+
+
+
+    try{
+
+
+      if(
+        navigator.share
+      ){
+
+
+        await navigator.share(
+          data
+        );
+
+
+        show('finalScreen');
+
+
+        stop();
+
+
+      }
+
+
+      else if(
+        navigator.clipboard
+      ){
+
+
+        await navigator.clipboard
+          .writeText(
+            location.href
+          );
+
+
+        $('shareAction')
+          .textContent =
+          'ENLACE COPIADO';
+
+
+        show('finalScreen');
+
+
+        stop();
+
+
+      }
+
+
+      else{
+
+
+        window.prompt(
+          'Copia el enlace',
+          location.href
+        );
+
+
+      }
+
+
+    }
+    catch(e){
+
+
+      if(
+        e.name !==
+        'AbortError'
+      ){
+
+
+        console.warn(e);
+
+
+      }
+
+
+    }
+
+
+  }
+);
+
+
+
+/* =====================================================
+   ERRO AR
+===================================================== */
+
+scene
+.addEventListener(
   'arError',
   ()=>{
 
+
     $('hint').textContent =
       'Error de cámara. Revisa los permisos.';
+
 
   }
 );
