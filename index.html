@@ -942,6 +942,10 @@ a-scene{
 
 }
 
+
+#hint:empty{display:none!important}
+#hint:not(:empty){display:block!important}
+#playFallback{position:relative;z-index:35;background:#f4ef00;color:#000;border:0;border-radius:25px;padding:12px 18px;font-weight:700;font-size:12px;pointer-events:auto;margin-bottom:12px;box-shadow:0 3px 12px #0002}
 </style>
 </head>
 
@@ -1045,6 +1049,8 @@ a-scene{
 
 
   <div class="cameraBottom">
+    <div id="hint" role="status" aria-live="polite" style="display:none"></div>
+    <button id="playFallback" type="button" style="display:none" aria-label="Reproducir animación">▶ REPRODUCIR ANIMACIÓN</button>
 
 
     <div class="lowerTools">
@@ -1520,6 +1526,7 @@ a-scene{
     <video
       id="video"
       src="./animacao.mp4"
+      type="video/mp4"
       preload="auto"
       muted
       playsinline
@@ -1839,46 +1846,30 @@ async function stop(){
    PLAY AGAIN
 ===================================================== */
 
-async function playAgain(){
-
-
-  if(!found){
-
-
-    $('hint').textContent =
-      'Enfoca primero la ilustración.';
-
-
-    return;
-
-  }
-
-
-  video.currentTime = 0;
-
-
-  showShareOnEnd = true;
-
-
+async function startVideoPlayback(restart=false){
+  if(!found){$('hint').textContent='Apunta la cámara hacia la ilustración.';return;}
+  if(restart){try{video.currentTime=0;}catch(e){}}
+  video.muted=true;
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
   try{
-
-
     await video.play();
-
-
+    $('playFallback').style.display='none';
+    $('hint').textContent='';
+    // Forzar actualización de la textura del vídeo en A-Frame.
+    const entity=document.querySelector('#target a-video');
+    const mesh=entity && entity.getObject3D('mesh');
+    if(mesh && mesh.material && mesh.material.map){
+      mesh.material.map.needsUpdate=true;
+    }
+  }catch(e){
+    console.warn('Safari no inició el vídeo automáticamente:',e);
+    $('hint').textContent='Imagen reconocida. Toca el botón para iniciar la animación.';
+    $('playFallback').style.display='block';
   }
-  catch(e){
-
-
-    $('hint').textContent =
-      'Toca ▶ para reproducir.';
-
-
-  }
-
 }
-
-
+async function playAgain(){showShareOnEnd=true;await startVideoPlayback(true);}
+$('playFallback').addEventListener('click',()=>startVideoPlayback(false));
 
 /* =====================================================
    BUTONS
@@ -1934,59 +1925,13 @@ for(
    TARGET
 ===================================================== */
 
-target
-.addEventListener(
-  'targetFound',
-  async()=>{
-
-
-    found = true;
-
-
-   $('hint').textContent = '';
-
-
-
-    if(
-      $('shareScreen')
-      .style
-      .display === 'flex'
-    ){
-
-      return;
-
-    }
-
-
-
-    video.currentTime = 0;
-
-
-    showShareOnEnd = true;
-
-
-
-    try{
-
-
-      await video.play();
-
-
-    }
-    catch(e){
-
-
-      $('hint').textContent =
-        'Pulsa ▶ para reproducir.';
-
-
-    }
-
-
-  }
-);
-
-
+target.addEventListener('targetFound',async()=>{
+  found=true;
+  $('hint').textContent='Imagen reconocida';
+  if($('finalScreen').style.display==='block'||$('shareScreen').style.display==='flex')return;
+  showShareOnEnd=true;
+  await startVideoPlayback(true);
+});
 
 target
 .addEventListener(
@@ -1998,6 +1943,7 @@ target
 
 
     video.pause();
+    $('playFallback').style.display='none';
 
 
     $('hint').textContent =
